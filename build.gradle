@@ -14,9 +14,20 @@ repositories {
 	mavenCentral()
 }
 
+ext {
+	set('springCloudVersion', "2023.0.3")
+}
+
 dependencies {
+
+	//implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.cloud:spring-cloud-starter-config'
+	implementation 'org.springframework.retry:spring-retry'
+
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-webflux'
@@ -39,5 +50,21 @@ bootBuildImage {
 			password = project.findProperty("registryToken")
 			url = project.findProperty("registryUrl")
 		}
+	}
+}
+
+bootRun {
+	systemProperty 'spring.profiles.active', 'testdata'  // Se podra activo cuando solo se haga bootRun
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
 	}
 }
